@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ludo Rajaa</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#111827;
+  font-family:Arial,sans-serif;
+}
+
+.game{
+  width:min(94vw,520px);
+  text-align:center;
+}
+
+h1{
+  color:#ffd700;
+  font-size:38px;
+  margin-bottom:18px;
+  text-shadow:0 3px 8px #000;
+}
+
+.board{
+  width:100%;
+  aspect-ratio:1;
+  display:grid;
+  grid-template-columns:repeat(15,1fr);
+  grid-template-rows:repeat(15,1fr);
+  background:#fff;
+  border:6px solid #222;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:0 10px 30px #0008;
+}
+
+.cell{
+  border:1px solid #bbb;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:10px;
+}
+
+.red{background:#ef4444;}
+.green{background:#22c55e;}
+.yellow{background:#facc15;}
+.blue{background:#3b82f6;}
+
+.center{
+  background:linear-gradient(135deg,#ef4444 50%,#22c55e 50%);
+  grid-column:6/11;
+  grid-row:6/11;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  color:white;
+  font-size:18px;
+  text-shadow:0 2px 3px #000;
+}
+
+.info{
+  margin-top:18px;
+  color:white;
+  font-size:18px;
+}
+
+button{
+  margin-top:15px;
+  padding:13px 30px;
+  border:0;
+  border-radius:30px;
+  background:#ffd700;
+  color:#111;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game">
+
+<h1>👑 LUDO RAJAA</h1>
+
+<div class="board">
+
+<script>
+for(let i=0;i<225;i++){
+  if(i>=0 && i<25){
+    document.write('<div class="cell red">●</div>');
+  }else if(i>=14*15 && i<225){
+    document.write('<div class="cell blue">●</div>');
+  }else if(i%15<5 && i>=25 && i<200){
+    document.write('<div class="cell green">●</div>');
+  }else if(i%15>=10 && i>=25 && i<200){
+    document.write('<div class="cell yellow">●</div>');
+  }else{
+    document.write('<div class="cell"></div>');
+  }
+}
+</script>
+
+<div class="center">RAJAA</div>
+
+</div>
+
+<div class="info">
+🎲 Player 1 — Roll the Dice
+</div>
+
+<button onclick="rollDice()">🎲 ROLL DICE</button>
+
+</div>
+
+<script>
+function rollDice(){
+  const dice=Math.floor(Math.random()*6)+1;
+  document.querySelector(".info").innerHTML=
+    "🎲 You rolled: <b>"+dice+"</b>";
+}
+</script>
+
+</body>
+</html>
