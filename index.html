@@ -2,35 +2,50 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Ludo Rajaa</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-}
+*{box-sizing:border-box;margin:0;padding:0}
 
 body{
   min-height:100vh;
+  background:#071126;
+  font-family:Arial,sans-serif;
+  color:white;
   display:flex;
   justify-content:center;
-  align-items:center;
-  background:#111827;
-  font-family:Arial,sans-serif;
+  padding:15px 8px 30px;
 }
 
-.game{
-  width:min(94vw,520px);
+.app{
+  width:min(96vw,520px);
   text-align:center;
+}
+
+.logo{
+  width:150px;
+  height:150px;
+  object-fit:contain;
+  border-radius:28px;
+  margin:5px auto 4px;
+  display:block;
 }
 
 h1{
   color:#ffd700;
-  font-size:38px;
-  margin-bottom:18px;
+  font-size:30px;
+  margin-bottom:12px;
   text-shadow:0 3px 8px #000;
+}
+
+.status{
+  background:#111d38;
+  border:1px solid #34466d;
+  border-radius:15px;
+  padding:10px;
+  margin-bottom:12px;
+  font-size:16px;
 }
 
 .board{
@@ -40,100 +55,469 @@ h1{
   grid-template-columns:repeat(15,1fr);
   grid-template-rows:repeat(15,1fr);
   background:#fff;
-  border:6px solid #222;
-  border-radius:14px;
+  border:6px solid #111;
+  border-radius:16px;
   overflow:hidden;
-  box-shadow:0 10px 30px #0008;
+  position:relative;
+  box-shadow:0 12px 30px #0009;
 }
 
 .cell{
-  border:1px solid #bbb;
+  border:1px solid #aaa;
+  background:#fff;
+  position:relative;
   display:flex;
-  justify-content:center;
   align-items:center;
-  font-size:10px;
+  justify-content:center;
 }
 
-.red{background:#ef4444;}
-.green{background:#22c55e;}
-.yellow{background:#facc15;}
-.blue{background:#3b82f6;}
+.redHome{background:#ef4444}
+.greenHome{background:#22c55e}
+.yellowHome{background:#facc15}
+.blueHome{background:#3b82f6}
+
+.track{
+  background:#fff;
+}
+
+.safe{
+  background:#e8f0ff;
+}
 
 .center{
-  background:linear-gradient(135deg,#ef4444 50%,#22c55e 50%);
-  grid-column:6/11;
-  grid-row:6/11;
+  grid-column:7/10;
+  grid-row:7/10;
+  background:linear-gradient(
+    45deg,
+    #ef4444 0 25%,
+    #22c55e 25% 50%,
+    #3b82f6 50% 75%,
+    #facc15 75%
+  );
+  z-index:2;
+  color:white;
+  font-weight:bold;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-weight:bold;
-  color:white;
-  font-size:18px;
-  text-shadow:0 2px 3px #000;
+  text-shadow:0 2px 4px #000;
+  font-size:12px;
 }
 
-.info{
-  margin-top:18px;
+.token{
+  width:72%;
+  height:72%;
+  border-radius:50%;
+  border:3px solid white;
+  box-shadow:0 2px 5px #000;
+  z-index:5;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:9px;
   color:white;
-  font-size:18px;
+  font-weight:bold;
+}
+
+.red{background:#e11d48}
+.green{background:#16a34a}
+.yellow{background:#eab308}
+.blue{background:#2563eb}
+
+.token.movable{
+  animation:pulse .7s infinite alternate;
+  box-shadow:0 0 0 3px #fff,0 0 14px #fff;
+}
+
+@keyframes pulse{
+  from{transform:scale(1)}
+  to{transform:scale(1.16)}
+}
+
+.dice{
+  font-size:58px;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 button{
-  margin-top:15px;
-  padding:13px 30px;
   border:0;
   border-radius:30px;
-  background:#ffd700;
+  padding:14px 34px;
+  background:#ffd000;
   color:#111;
   font-size:18px;
   font-weight:bold;
-  cursor:pointer;
+  box-shadow:0 5px 12px #0007;
+}
+
+button:active{
+  transform:scale(.96);
+}
+
+button:disabled{
+  opacity:.5;
+}
+
+.players{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:5px;
+  margin-top:12px;
+}
+
+.player{
+  padding:7px 2px;
+  border-radius:10px;
+  font-size:11px;
+  border:2px solid transparent;
+}
+
+.active{
+  border-color:white;
+  box-shadow:0 0 10px white;
+}
+
+.redBox{background:#b91c1c}
+.greenBox{background:#15803d}
+.yellowBox{background:#a16207}
+.blueBox{background:#1d4ed8}
+
+.help{
+  margin-top:12px;
+  color:#aebbd5;
+  font-size:12px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="game">
+<div class="app">
+
+<img src="logo.png" class="logo" alt="Ludo Rajaa">
 
 <h1>👑 LUDO RAJAA</h1>
 
-<div class="board">
+<div class="status" id="status">
+🔴 Red Player — Dice roll karo
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="dice" id="dice">🎲</div>
+
+<button id="rollBtn" onclick="rollDice()">🎲 ROLL DICE</button>
+
+<div class="players">
+  <div class="player redBox active" id="p0">🔴 RED</div>
+  <div class="player greenBox" id="p1">🟢 GREEN</div>
+  <div class="player yellowBox" id="p2">🟡 YELLOW</div>
+  <div class="player blueBox" id="p3">🔵 BLUE</div>
+</div>
+
+<div class="help">
+6 आने पर गोटी बाहर आएगी • अपनी गोटी पर tap करके move करें
+</div>
+
+</div>
 
 <script>
-for(let i=0;i<225;i++){
-  if(i>=0 && i<25){
-    document.write('<div class="cell red">●</div>');
-  }else if(i>=14*15 && i<225){
-    document.write('<div class="cell blue">●</div>');
-  }else if(i%15<5 && i>=25 && i<200){
-    document.write('<div class="cell green">●</div>');
-  }else if(i%15>=10 && i>=25 && i<200){
-    document.write('<div class="cell yellow">●</div>');
-  }else{
-    document.write('<div class="cell"></div>');
+
+const board=document.getElementById("board");
+const statusBox=document.getElementById("status");
+const diceBox=document.getElementById("dice");
+const rollBtn=document.getElementById("rollBtn");
+
+const colors=["red","green","yellow","blue"];
+const names=["Red","Green","Yellow","Blue"];
+
+let currentPlayer=0;
+let dice=0;
+let waitingForToken=false;
+
+/*
+  52-cell Ludo track
+*/
+const path=[
+[6,0],[7,0],[8,0],[9,0],[10,0],
+[10,1],[10,2],[10,3],[10,4],[10,5],
+[11,5],[12,5],[13,5],[14,5],
+[14,6],[14,7],
+[13,7],[12,7],[11,7],[10,7],
+[10,8],[10,9],[10,10],[10,11],
+[10,12],[10,13],[10,14],
+[9,14],[8,14],[7,14],[6,14],
+[6,13],[6,12],[6,11],[6,10],
+[5,10],[4,10],[3,10],[2,10],[1,10],[0,10],
+[0,9],[0,8],
+[1,8],[2,8],[3,8],[4,8],[5,8],
+[5,7],[5,6],
+[4,6],[3,6],[2,6],[1,6],[0,6]
+];
+
+/*
+  Use first 52 unique positions.
+*/
+const track=path.slice(0,52);
+
+const starts=[0,13,26,39];
+
+const homePositions=[
+  [[2,2],[3,2],[2,3],[3,3]],
+  [[11,2],[12,2],[11,3],[12,3]],
+  [[11,11],[12,11],[11,12],[12,12]],
+  [[2,11],[3,11],[2,12],[3,12]]
+];
+
+let tokens=[];
+
+for(let p=0;p<4;p++){
+  tokens[p]=[];
+  for(let t=0;t<4;t++){
+    tokens[p].push({
+      progress:-1,
+      home:true
+    });
   }
 }
-</script>
 
-<div class="center">RAJAA</div>
+/* Create board */
 
-</div>
-
-<div class="info">
-🎲 Player 1 — Roll the Dice
-</div>
-
-<button onclick="rollDice()">🎲 ROLL DICE</button>
-
-</div>
-
-<script>
-function rollDice(){
-  const dice=Math.floor(Math.random()*6)+1;
-  document.querySelector(".info").innerHTML=
-    "🎲 You rolled: <b>"+dice+"</b>";
+function makeCell(r,c,cls="cell"){
+  const el=document.createElement("div");
+  el.className=cls;
+  el.style.gridRow=r+1;
+  el.style.gridColumn=c+1;
+  board.appendChild(el);
+  return el;
 }
+
+/* homes */
+
+for(let r=0;r<15;r++){
+  for(let c=0;c<15;c++){
+
+    if(r<6 && c<6){
+      makeCell(r,c,"cell redHome");
+    }
+    else if(r<6 && c>8){
+      makeCell(r,c,"cell greenHome");
+    }
+    else if(r>8 && c<6){
+      makeCell(r,c,"cell blueHome");
+    }
+    else if(r>8 && c>8){
+      makeCell(r,c,"cell yellowHome");
+    }
+    else{
+      makeCell(r,c,"cell track");
+    }
+  }
+}
+
+/* central area */
+const center=document.createElement("div");
+center.className="center";
+center.innerHTML="👑<br>RAJAA";
+board.appendChild(center);
+
+/* token rendering */
+
+function getCellAt(r,c){
+  return [...board.children].find(
+    e=>e.style.gridRow==(r+1)+""
+      &&e.style.gridColumn==(c+1)+""
+  );
+}
+
+function renderTokens(){
+
+  document.querySelectorAll(".token").forEach(e=>e.remove());
+
+  for(let p=0;p<4;p++){
+
+    for(let t=0;t<4;t++){
+
+      const token=tokens[p][t];
+
+      let pos;
+
+      if(token.progress===-1){
+        pos=homePositions[p][t];
+      }
+      else if(token.progress>=52){
+        /* finished tokens stay near center */
+        pos=[
+          [6,6],[6,8],[8,6],[8,8]
+        ][t];
+      }
+      else{
+        const index=(starts[p]+token.progress)%52;
+        pos=track[index];
+      }
+
+      const cell=getCellAt(pos[0],pos[1]);
+
+      if(!cell) continue;
+
+      const el=document.createElement("div");
+
+      el.className=
+        "token "+colors[p]+
+        (waitingForToken &&
+         p===currentPlayer &&
+         canMove(p,t)
+          ?" movable":"");
+
+      el.innerText=t+1;
+
+      el.onclick=()=>{
+        if(
+          waitingForToken &&
+          p===currentPlayer &&
+          canMove(p,t)
+        ){
+          moveToken(p,t);
+        }
+      };
+
+      cell.appendChild(el);
+    }
+  }
+}
+
+function canMove(p,t){
+
+  const progress=tokens[p][t].progress;
+
+  if(progress===-1)
+    return dice===6;
+
+  if(progress+dice>57)
+    return false;
+
+  return true;
+}
+
+function rollDice(){
+
+  if(waitingForToken) return;
+
+  dice=Math.floor(Math.random()*6)+1;
+
+  const faces=["⚀","⚁","⚂","⚃","⚄","⚅"];
+
+  diceBox.innerText=faces[dice-1];
+
+  statusBox.innerHTML=
+    "🎲 "+names[currentPlayer]+
+    " rolled <b>"+dice+"</b>";
+
+  let moves=[];
+
+  for(let t=0;t<4;t++){
+    if(canMove(currentPlayer,t))
+      moves.push(t);
+  }
+
+  if(moves.length===0){
+
+    statusBox.innerHTML=
+      "❌ "+names[currentPlayer]+
+      " cannot move";
+
+    setTimeout(nextTurn,900);
+
+  }else{
+
+    waitingForToken=true;
+    rollBtn.disabled=true;
+
+    statusBox.innerHTML=
+      "👉 "+names[currentPlayer]+
+      " — goti select karo";
+
+    renderTokens();
+  }
+}
+
+function moveToken(p,t){
+
+  const token=tokens[p][t];
+
+  if(token.progress===-1){
+    token.progress=0;
+  }else{
+    token.progress+=dice;
+  }
+
+  waitingForToken=false;
+  renderTokens();
+
+  /* Win condition */
+  if(token.progress>=57){
+
+    token.progress=57;
+
+    const finished=
+      tokens[p].filter(x=>x.progress>=57).length;
+
+    if(finished===4){
+
+      statusBox.innerHTML=
+        "🏆 👑 "+names[p]+" PLAYER WINS!";
+
+      rollBtn.disabled=true;
+      return;
+    }
+  }
+
+  /*
+    6 = extra turn
+  */
+  if(dice===6){
+
+    statusBox.innerHTML=
+      "🔥 "+names[p]+
+      " को 6 मिला — फिर से Roll करो!";
+
+    rollBtn.disabled=false;
+    return;
+  }
+
+  nextTurn();
+}
+
+function nextTurn(){
+
+  currentPlayer=
+    (currentPlayer+1)%4;
+
+  dice=0;
+  diceBox.innerText="🎲";
+
+  rollBtn.disabled=false;
+
+  document.querySelectorAll(".player")
+    .forEach(e=>e.classList.remove("active"));
+
+  document
+    .getElementById("p"+currentPlayer)
+    .classList.add("active");
+
+  statusBox.innerHTML=
+    "🎲 "+names[currentPlayer]+
+    " Player — Dice roll karo";
+
+  renderTokens();
+}
+
+renderTokens();
+
 </script>
 
 </body>
